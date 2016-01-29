@@ -20,19 +20,23 @@ class Personne
 
   def attaque(personne)
     # A faire:
-	personne.subit_attaque(self.degats)
+	  if personne.en_vie == true
+		  puts "#{self.nom} Attaque #{personne.nom}"
+		  personne.subit_attaque(self.degats)
+	  else
+		  puts "vous ne pouvez pas attaquer car #{personne.nom} est mort"
+	  end
     # - Fait subir des degats à la personne passee en paramètre
-	puts "#{personne.nom} Attaque #{self.nom}"
     # - Affiche ce qu'il s'est passe
   end
 
   def subit_attaque(degats_recus)
     # A faire:
     # - Reduit les points de vie en fonction des degats reçus
-	  return self.points_de_vie -= degats_recus
+	  self.points_de_vie -= degats_recus
     # - Affiche ce qu'il s'est passe
 	  puts "#{self.nom} perd #{degats_recus} points de vie"
-	  if point_de_vie > 1
+	  if self.points_de_vie > 1
 		  self.en_vie = true
 	  else
 		self.en_vie = false
@@ -55,21 +59,25 @@ class Joueur < Personne
   def degats
     # A faire:
 	  force = degats_bonus + 80
-	return force
       	  # - Calculer les degats
 	  puts "#{self.nom} a une force de #{force}"
     # - Affiche ce qu'il s'est passe
+	return force
   end
 
   def soin
     # A faire:
+	  self.points_de_vie += 50
     # - Gagner de la vie
+	puts "#{self.nom} recupere 50 points de vie"
     # - Affiche ce qu'il s'est passe
   end
 
   def ameliorer_degats
     # A faire:
+	  self.degats_bonus += 10
     # - Augmenter les degats bonus
+	  puts "#{self.nom} augmente sa force de 10 points"
     # - Affiche ce qu'il s'est passe
   end
 end
@@ -101,18 +109,34 @@ class Jeu
 
   def self.est_fini(joueur, monde)
     # A faire:
+	  adversaire = 0
+	  monde.ennemis.each do |ennemi|
+		  adversaire += 1 if ennemi.en_vie
+	  end
+	if joueur.en_vie == false || adversaire == 0 
     # - Determiner la condition de fin du jeu
+		return true
+	else
+		return false
+  	end
   end
 end
 
 class Monde
-  attr_accessor :ennemis
+	attr_accessor :ennemis 
 
-  def ennemis_en_vie
-	 
-    # A faire:
-    # - Ne retourner que les ennemis en vie
-  end
+	def ennemis_en_vie
+		# creation d'un tableau vide où seront stockés les ennemis en vie
+		ennemis_vivant = []
+		# on boucle sur le tableau des ennemis
+		ennemis.each do |ennemi|
+			if ennemi.en_vie == true
+			ennemis_vivant << ennemi
+			end
+		end
+		#Je retourne le tableau avec les ennemis encore vivant
+		return ennemis_vivant
+	end
 end
 
 ##############
@@ -184,7 +208,3 @@ if joueur.en_vie
 else
   puts "Vous avez perdu !"
 end
-
-
-
-
